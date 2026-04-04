@@ -10,6 +10,8 @@ yarn-debug.log*
 yarn-error.log*
 
 assets/database/*
+!assets/database/.gitkeep
+
 .DS_Store
 Thumbs.db
 
