@@ -36,4 +36,17 @@ export class AuthService {
 
         return status_code
     }
+
+    public async logout() {
+        const { status_code } = await fetcher(`${config.API_BASE_URL}/auth/logout`, {
+            method: 'POST',
+            headers: {
+                Authorization: process.env.API_PRIVATE_KEY,
+                'Content-Type': 'application/json',
+                userId: this.id
+            }
+        })
+
+        return status_code
+    }
 }
