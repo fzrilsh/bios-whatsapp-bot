@@ -8,11 +8,12 @@ import { AllowedUsersService } from "../services/allowed-users.service.js";
 import { MessageProvider } from "../utils/message-provider.js";
 import { JSONDB } from "../database/json-db.js";
 
-const maintenance = new JSONDB("assets/database/maintenance.json", {})
-const messagesWhenMaintenance = new JSONDB("assets/database/messages-when-maintenance.json", {})
-const allowedUsers = new AllowedUsersService()
 
 export async function messageUpsert(sock: WASocket, chatUpdate: { messages: proto.IWebMessageInfo[] }, commands: Map<string, Command>, msgProvider: MessageProvider) {
+    const maintenance = new JSONDB("assets/database/maintenance.json", {})
+    const messagesWhenMaintenance = new JSONDB("assets/database/messages-when-maintenance.json", {})
+    const allowedUsers = new AllowedUsersService()
+    
     for (const msg of chatUpdate.messages) {
         const m = smgs(sock, msg)
 
