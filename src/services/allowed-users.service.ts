@@ -8,8 +8,8 @@ import { ExtendedMessage } from "../types/extended-message.type.js"
 
 export class AllowedUsersService {
     private dbPath = path.join(process.cwd(), "assets/database/allowed-users.json")
-    private users: string[]
     private userInvalidQueue: Record<string, InvalidQueue>
+    public users: string[]
 
     constructor() {
         this.users = []
