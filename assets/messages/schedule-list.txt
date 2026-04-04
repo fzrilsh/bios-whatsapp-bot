@@ -1,0 +1,4 @@
+Halo, {{name}}! Siapkan mental, Berikut adalah jadwal kuliahmu mendatang 🚀
+> Gunakan .jadwal [nomor] untuk absen
+
+{{list}}
