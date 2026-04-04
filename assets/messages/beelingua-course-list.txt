@@ -11,4 +11,4 @@ Halo! Berikut adalah rangkuman progress Beelingua kamu:
 
 ────────────────────────
 
-_Gunakan .beelingua info [nomor] untuk detail unit._
+💡 _Ketik *.bl info {{journeyId}} [nomor_course]* untuk melihat detail unit._

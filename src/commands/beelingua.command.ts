@@ -66,14 +66,13 @@ const beelinguaCommand: Command = {
                         return `*[${index + 1}]* ${statusIcon} [${course.courseCode}] ${course.courseTitleEn}\n   └ Progress: ${progressTag} (${course.unitCompleted}/${course.unitTotal} Units)`
                     }).join("\n\n")
 
-                    const replyText = msgProvider.get('beelingua-course-list', {
+                    return await m.reply(msgProvider.get('beelingua-course-list', {
                         courseListText,
                         totalDone,
                         totalPending,
-                        total: courses.length
-                    })! + `\n\n💡 _Ketik *.bl info ${args[0]} [nomor_course]* untuk melihat detail unit._`
-
-                    return await m.reply(replyText)
+                        total: courses.length,
+                        journeyId: args[0]
+                    })!)
                 }
 
                 const courseIndex = parseInt(args[1]!) - 1
