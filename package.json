@@ -12,7 +12,7 @@
     "lint:fix": "eslint \"src/**/*.ts\" --fix"
   },
   "keywords": [],
-  "author": "",
+  "author": "fazrilsh",
   "license": "ISC",
   "description": "",
   "dependencies": {
