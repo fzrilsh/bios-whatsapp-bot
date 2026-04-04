@@ -9,10 +9,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-assets/database/
-assets/tokens/
-assets/rooms_bssid.json
-
+assets/database/*
 .DS_Store
 Thumbs.db
 
