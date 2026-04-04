@@ -49,6 +49,6 @@ jobs:
           git checkout -b build
           
           git add .
-          git commit -m "🚀 auto-build: deploy production ready files from main"
+          git commit -m "auto-build: deploy production ready files from main"
           
           git push --force https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git build
