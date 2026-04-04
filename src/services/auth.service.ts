@@ -42,7 +42,6 @@ export class AuthService {
             method: 'POST',
             headers: {
                 Authorization: process.env.API_PRIVATE_KEY,
-                'Content-Type': 'application/json',
                 userId: this.id
             }
         })
