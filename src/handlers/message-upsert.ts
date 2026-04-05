@@ -13,7 +13,7 @@ export async function messageUpsert(sock: WASocket, chatUpdate: { messages: prot
     const maintenance = new JSONDB("assets/database/maintenance.json", {})
     const messagesWhenMaintenance = new JSONDB("assets/database/messages-when-maintenance.json", {})
     const allowedUsers = new AllowedUsersService()
-    
+
     for (const msg of chatUpdate.messages) {
         const m = smgs(sock, msg)
 
@@ -24,9 +24,10 @@ export async function messageUpsert(sock: WASocket, chatUpdate: { messages: prot
             if (currentTimestamp - msgTimestamp > 60 * 60 * 24) {
                 continue
             }
-            
+
             if (m.message?.reactionMessage) {
-                return reactionMessage(m, allowedUsers)
+                await reactionMessage(m, allowedUsers, sock, commands, msgProvider)
+                continue
             }
 
             if (!m || !m.text || m.isGroup) {
@@ -45,21 +46,20 @@ export async function messageUpsert(sock: WASocket, chatUpdate: { messages: prot
                 if (commandName == cmd.name || cmd.alias?.includes(commandName!)) {
                     await m.read()
 
-                    await allowedUsers.handleUserNotAllowed(m.sender, sock, async() => {
-                        if (maintenance.get.mode && !m.fromMe && !m.isOwner) {
-                            messagesWhenMaintenance.get[m.sender] = msg
-                            messagesWhenMaintenance.write()
-                            
-                            return await m.reply('Mohon maaf, saat ini sistem tidak dapat digunakan. Perintah terakhir kamu akan sistem response setelah maintenance selesai.\n\n> Note: ' + maintenance.get.reason)
-                        }
+                    const isAllowed = await allowedUsers.handleUserNotAllowed(sock, m)
+                    if (!isAllowed) return
+                    
+                    if (maintenance.get.mode && !m.fromMe && !m.isOwner) {
+                        messagesWhenMaintenance.get[m.sender] = msg
+                        messagesWhenMaintenance.write()
+                        return await m.reply('Mohon maaf, saat ini sistem tidak dapat digunakan. Perintah terakhir kamu akan sistem response setelah maintenance selesai.\n\n> Note: ' + maintenance.get.reason)
+                    }
 
-                        if (cmd.mustOwner && !m.isOwner) {
-                            return await m.reply(msgProvider.get('forbidden')!)
-                        }
+                    if (cmd.mustOwner && !m.isOwner) {
+                        return await m.reply(msgProvider.get('forbidden')!)
+                    }
 
-                        await cmd.execute({ sock, m, args, commands, command: commandName!, msgProvider })
-                    })
-
+                    await cmd.execute({ sock, m, args, commands, command: commandName!, msgProvider })
                     break
                 }
             }

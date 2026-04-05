@@ -5,15 +5,19 @@ import { WASocket } from "baileys"
 import { logger } from "../utils/logger.js"
 import config from "../config/index.js"
 import { ExtendedMessage } from "../types/extended-message.type.js"
+import { JSONDB } from "../database/json-db.js"
+import { messageUpsert } from "../handlers/message-upsert.js"
+import { Command } from "../types/command.type.js"
+import { MessageProvider } from "../utils/message-provider.js"
 
 export class AllowedUsersService {
     private dbPath = path.join(process.cwd(), "assets/database/allowed-users.json")
-    private userInvalidQueue: Record<string, InvalidQueue>
+    private userInvalidQueue: JSONDB
     public users: string[]
 
     constructor() {
         this.users = []
-        this.userInvalidQueue = {}
+        this.userInvalidQueue = new JSONDB("assets/database/user-queue-allowed.json", {})
 
         this.ensureFile()
         this.readDB()
@@ -64,33 +68,48 @@ export class AllowedUsersService {
         this.writeDB()
     }
 
-    public async handleUserNotAllowed(id: string, sock: WASocket, callback: () => void) {
+    public async handleUserNotAllowed(sock: WASocket, m: ExtendedMessage): Promise<boolean> {
         try {
-            if (this.isAllowed(id) || config.OWNER_NUMBER === id.split("@")[0]) return callback()
-            if (this.userInvalidQueue?.[id]) return
-    
+            const id = m.sender
+            if (this.isAllowed(id) || config.OWNER_NUMBER === id.split("@")[0]) return true
+            if (this.userInvalidQueue.get?.[id]) return false
+
             const msgConfirm = await sock.sendMessage(config.OWNER_NUMBER + '@s.whatsapp.net', { text: `🚨 Allow @${id.split('@')[0]}?`, mentions: [id] })
-            this.userInvalidQueue[id] = {
-                callback,
+            this.userInvalidQueue.get[id] = {
+                message: m.message,
                 msgConfirmId: msgConfirm?.key.id!
             }
+
+            this.userInvalidQueue.write()
+            return false
         } catch (error) {
             throw error
         }
     }
 
-    public handleUserPermit(m: ExtendedMessage, icon: string) {
+    public async handleUserPermit(m: ExtendedMessage, icon: string, sock: WASocket, commands: Map<string, Command>, msgProvider: MessageProvider) {
         const msgId = m.message?.reactionMessage?.key?.id
-        const queueId = Object.values(this.userInvalidQueue).findIndex(v => v.msgConfirmId === msgId)
-        if (queueId == -1) return
+        const queueEntries = Object.entries(this.userInvalidQueue.get || {})
 
-        const id = Object.keys(this.userInvalidQueue)[queueId]
-        switch (icon) {
-            case '👍':
-                this.addUser(id)
-                this.userInvalidQueue[id].callback()
-                m.reply(`Berhasil menambahkan @${id.split('@')[0]} ke dalam daftar allowed users`, true, { mentions: [id] })
-                break;
+        const found = queueEntries.find(([_, data]: any) => data.msgConfirmId === msgId)
+        if (!found) return
+
+        const [userId, data]: [string, any] = found
+        if (icon === '👍') {
+            this.addUser(userId)
+            delete this.userInvalidQueue.get[userId]
+            this.userInvalidQueue.write()
+
+            await m.reply(`✅ @${userId.split('@')[0]} telah di-allow. Menjalankan perintah...`, true, { mentions: [userId] })
+            const fakeChatUpdate = {
+                messages: [{
+                    key: { remoteJid: userId, fromMe: false, id: data.msgConfirmId, addressingMode: 'pn' },
+                    message: data.message,
+                    messageTimestamp: Math.floor(Date.now() / 1000)
+                }]
+            }
+
+            await messageUpsert(sock, fakeChatUpdate, commands, msgProvider)
         }
     }
 }
