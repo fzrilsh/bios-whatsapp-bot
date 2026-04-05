@@ -25,6 +25,7 @@ const sudoCommand: Command = {
                         remoteJid: targetJid,
                         fromMe: false,
                         id: "SUDO-" + Date.now(), 
+                        addressingMode: 'pn'
                     },
                     message: {
                         conversation: sudoText
