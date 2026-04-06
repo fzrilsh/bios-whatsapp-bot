@@ -176,10 +176,12 @@ const beelinguaCommand: Command = {
                         if (!progressData.state.status) {
                             isFinished = true
                             clearInterval(pollInterval)
-                            return await sock.sendMessage(m.chat, {
+                            await sock.sendMessage(m.chat, {
                                 text: "❌ *Gagal*\nTerjadi kesalahan saat memulai automasi di server.",
                                 edit: loadingMsg!.key
                             })
+
+                            throw progressData.state.message
                         }
 
                         if (doneUnits >= totalUnits || progressData.state.status == 2) {
@@ -191,7 +193,7 @@ const beelinguaCommand: Command = {
                             })
                         }
                     } catch (error) {
-                        logger.error("Polling error during solveCourse:", error)
+                        logger.error("Polling error during solveCourse", error)
                     }
                 }, 10000)
 
