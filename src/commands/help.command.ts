@@ -6,10 +6,6 @@ const helpCommand: Command = {
     withPrefix: true,
     execute: async ({ m, msgProvider }) => {
         const userInfo = await m.auth.getUserInfo()
-        if (!userInfo) {
-            return await m.reply(msgProvider.get('unauthenticated')!)
-        }
-
         const statusText = userInfo
             ? `✅ *Status:* Terhubung (${userInfo.name})`
             : `⚠️ *Status:* Belum Login (Ketik *.login*)`;
