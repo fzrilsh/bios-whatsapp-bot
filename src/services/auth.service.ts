@@ -7,15 +7,24 @@ export class AuthService {
 
     constructor(id: string) {
         this.id = id
+        this.pingServer()
     }
 
-    public async getUserInfo(): Promise<UserData | null> {
-        const { status, response_json } = await fetcher(`${config.API_BASE_URL}/auth/user`, {
+    public async pingServer() {
+        await fetcher(`${config.API_BASE_URL}/ping`)
+    }
+
+    public async getUserInfo(): Promise<UserData | null | false> {
+        const { status, response_json, response_text } = await fetcher(`${config.API_BASE_URL}/auth/user`, {
             headers: {
                 Authorization: process.env.API_PRIVATE_KEY,
                 userId: this.id
             }
         })
+
+        if (response_text.includes('Network Error')) {
+            return false
+        }
 
         return status ? response_json.data as UserData : null
     }
