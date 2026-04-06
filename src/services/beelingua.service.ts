@@ -69,7 +69,8 @@ export class BeelinguaService {
         const { status, response_text } = await fetcher(`${config.API_BASE_URL}/beelingua/solve`, {
             method: 'POST',
             headers: this.headers,
-            body: JSON.stringify({ classId })
+            body: JSON.stringify({ classId }),
+            keepalive: true
         })
 
         if (!status) {

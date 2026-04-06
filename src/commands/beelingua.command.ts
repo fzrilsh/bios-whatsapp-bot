@@ -144,25 +144,32 @@ const beelinguaCommand: Command = {
 
                 const loadingMsg = await m.reply(`🚀 *Automasi Dimulai*\nSistem sedang mengerjakan course [${course.courseCode}] di background. Tunggu sebentar ya...`)
 
-                const isStarted = await service.solveCourse(course.classId)
-                if (!isStarted) {
-                    return await sock.sendMessage(m.chat, {
-                        text: "❌ *Gagal*\nTerjadi kesalahan saat memulai automasi di server.",
-                        edit: loadingMsg!.key
-                    })
-                }
-
                 let isFinished = false
+                const startTime = Date.now()
+                
                 const pollInterval = setInterval(async () => {
                     try {
                         const progressData = await service.pollProgress(course.classId)
                         const units = progressData.unitGroups.flatMap((group: any) => group.units ?? [])
 
                         const totalUnits = units.length
+
                         const doneUnits = units.filter((u: any) => u.status === 'done').length
+                        const elapsedSeconds = (Date.now() - startTime) / 1000
+
+                        let etaText = "Menghitung..."
+                        if (doneUnits > 0) {
+                            const avgTimePerUnit = elapsedSeconds / doneUnits
+                            const remainingUnits = totalUnits - doneUnits
+                            const remainingSeconds = remainingUnits * avgTimePerUnit
+
+                            const m = Math.floor(remainingSeconds / 60)
+                            const s = Math.round(remainingSeconds % 60)
+                            etaText = `${m}m ${s}s`
+                        }
 
                         await sock.sendMessage(m.chat, {
-                            text: `🚀 *Automasi Berjalan*\nCourse: [${course.courseCode}]\nProgress: ${doneUnits}/${totalUnits} Unit Selesai...`,
+                            text: `🚀 *Automasi Berjalan*\nCourse: [${course.courseCode}]\nProgress: ${doneUnits}/${totalUnits} Unit\nEstimasi Selesai: ${etaText}`,
                             edit: loadingMsg!.key
                         })
 
@@ -177,7 +184,17 @@ const beelinguaCommand: Command = {
                     } catch (error) {
                         logger.error("Polling error during solveCourse:", error)
                     }
-                }, 5000)
+                }, 10000)
+
+                const isStarted = await service.solveCourse(course.classId)
+                if (!isStarted) {
+                    isFinished = true
+                    clearInterval(pollInterval)
+                    return await sock.sendMessage(m.chat, {
+                        text: "❌ *Gagal*\nTerjadi kesalahan saat memulai automasi di server.",
+                        edit: loadingMsg!.key
+                    })
+                }
 
                 setTimeout(() => {
                     if (!isFinished) {
