@@ -8,4 +8,3 @@ Sisa Saldo: {{token}} Token
 🎮 Daftar Perintah:
 `.beelingua info` — Cek daftar progres unit.
 `.beelingua solve` — Selesaikan 1 course.
-`.beelingua buy` — Top-up token kamu.

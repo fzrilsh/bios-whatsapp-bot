@@ -139,7 +139,7 @@ const beelinguaCommand: Command = {
                 }
 
                 if (profile.tokens < 1) {
-                    return await m.reply(`❌ *SALDO HABIS*\nMaaf, token kamu saat ini 0. Silakan ketik *.bl buy* untuk menambah token.`)
+                    return await m.reply(`❌ *SALDO HABIS*\nMaaf, token kamu saat ini sudah habis. Silakan ketik *.bl buy* untuk beli token.`)
                 }
 
                 const loadingMsg = await m.reply(`🚀 *Automasi Dimulai*\nSistem sedang mengerjakan course [${course.courseCode}] di background. Tunggu sebentar ya...`)
