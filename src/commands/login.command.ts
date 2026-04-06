@@ -10,7 +10,7 @@ const LoginCommand: Command = {
     withPrefix: true,
     execute: async ({ sock, m, args }) => {
         const userInfo = await m.auth.getUserInfo()
-        if (userInfo != null) {
+        if (userInfo) {
             return await m.reply("✅ Login berhasil.\nSilahkan lanjutkan aktivitas kamu!")
         }
 
