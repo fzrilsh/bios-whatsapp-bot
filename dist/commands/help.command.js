@@ -1,0 +1,2 @@
+const o={name:"help",description:"Menampilkan semua perintah",withPrefix:!0,execute:async({m:t,msgProvider:a})=>{const e=await t.auth.getUserInfo(),n=e?`\u2705 *Status:* Terhubung (${e.name})`:"\u26A0\uFE0F *Status:* Belum Login (Ketik *.login*)";await t.reply(a.get("default",{status:n}))}};var i=o;export{i as default};
+//# sourceMappingURL=help.command.js.map

@@ -1,0 +1,7 @@
+💳 *INSTRUKSI PEMBAYARAN*
+                
+Untuk membeli *2 Token (Rp70.000)*, silakan transfer melalui:
+- *SeaBank:* 901142106970
+- *Keterangan:* BL{{id}}
+
+Setelah transfer, pembayaran akan diverifikasi otomatis paling lama 10 menit.

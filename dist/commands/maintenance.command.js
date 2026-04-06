@@ -1,0 +1,4 @@
+import{JSONDB as o}from"../database/json-db.js";import{messageUpsert as d}from"../handlers/message-upsert.js";const a=new o("assets/database/maintenance.json",{}),t=new o("assets/database/messages-when-maintenance.json",{}),u={name:"maintenance",description:"Set maintenance mode",withPrefix:!0,mustOwner:!0,execute:async({sock:i,m:s,args:e,commands:r,msgProvider:c})=>{if(e.length<1)return await s.reply("Format salah. Gunakan: *.maintenance [mode] [reason]*");const n=e.shift()=="true",m=e.join(" ");a.get.mode=n,a.get.reason=m,a.write(),n||(d(i,{messages:Object.values(t.get)},r,c),t.clear(),t.write()),await s.reply(`Maintenance mode berhasil di ganti!
+Mode: ${n}
+Reason: ${m}`)}};var g=u;export{g as default};
+//# sourceMappingURL=maintenance.command.js.map

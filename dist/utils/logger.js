@@ -1,0 +1,3 @@
+import o from"fs";import e from"path";class a{logPath=e.join(process.cwd(),"logs/error.log");runtimeLogs=[];MAX_RUNTIME_LOGS=100;constructor(){o.existsSync(e.dirname(this.logPath))||o.mkdirSync(e.dirname(this.logPath),{recursive:!0})}error(r,t={}){const i=new Date().toISOString(),s=t instanceof Error?t.stack||t.message:JSON.stringify(t),n={timestamp:i,context:r.toUpperCase(),message:s};this.runtimeLogs.push(n),this.runtimeLogs.length>this.MAX_RUNTIME_LOGS&&this.runtimeLogs.shift();const g=`[${i}] [${n.context}]: ${s}
+`;console.error(`\x1B[31m${g}\x1B[0m`),o.appendFileSync(this.logPath,g)}getRuntimeLogs(r=20){return this.runtimeLogs.slice(-r).reverse()}clearRuntimeLogs(){this.runtimeLogs=[]}}const u=new a;export{u as logger};
+//# sourceMappingURL=logger.js.map

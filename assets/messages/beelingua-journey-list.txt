@@ -1,0 +1,5 @@
+📚 *Daftar Journey*
+
+{{journeyList}}
+
+💡 _Ketik *.bl info [nomor_journey]* untuk melihat daftar course._

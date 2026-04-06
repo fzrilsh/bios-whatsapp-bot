@@ -1,0 +1,18 @@
+🎓 *B.I.O.S Dashboard* 🤖
+_Binusmaya Integrated Orchestrator Service_
+
+Halo Binusian! 🚀 
+{{status}}
+
+*🔑 Autentikasi*
+↳ *.login* - Hubungkan akun Binusmaya
+↳ *.logout* - Hapus sesi & amankan data
+
+*📚 Perkuliahan*
+↳ *.jadwal* | *.sc* - Cek jadwal & auto-absen kelas
+
+*🐝 Beelingua*
+↳ *.beelingua* | *.bl* - Menu utama automasi Beelingua
+
+---
+💡 _Tip: Cukup ketik command-nya langsung di chat ini!_
