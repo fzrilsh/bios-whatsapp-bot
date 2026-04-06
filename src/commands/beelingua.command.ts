@@ -146,7 +146,7 @@ const beelinguaCommand: Command = {
 
                 let isFinished = false
                 const startTime = Date.now()
-                
+
                 const pollInterval = setInterval(async () => {
                     try {
                         const progressData = await service.pollProgress(course.classId)
@@ -173,7 +173,16 @@ const beelinguaCommand: Command = {
                             edit: loadingMsg!.key
                         })
 
-                        if (doneUnits >= totalUnits) {
+                        if (!progressData.state.status) {
+                            isFinished = true
+                            clearInterval(pollInterval)
+                            return await sock.sendMessage(m.chat, {
+                                text: "❌ *Gagal*\nTerjadi kesalahan saat memulai automasi di server.",
+                                edit: loadingMsg!.key
+                            })
+                        }
+
+                        if (doneUnits >= totalUnits || progressData.state.status == 2) {
                             isFinished = true
                             clearInterval(pollInterval)
                             await sock.sendMessage(m.chat, {
