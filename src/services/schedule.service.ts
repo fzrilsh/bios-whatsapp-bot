@@ -45,6 +45,8 @@ export class ScheduleService {
         }
 
         const now = new Date()
+        now.setHours(0, 0, 0)
+
         return response.flat()
             .filter(v => now <= new Date(v.dateStart))
             .sort((a, b) => (new Date(a.dateStart)).getTime() - new Date(b.dateStart).getTime())
