@@ -1,0 +1,2 @@
+const e={name:"logout",description:"Keluar dari sesi Binusmaya dan hapus data token kamu dari sistem dengan aman.",withPrefix:!0,execute:async({m:a,msgProvider:t})=>{if(!await a.auth.getUserInfo())return await a.reply(t.get("unauthenticated"));switch(await a.auth.logout()){case 200:await a.reply("\u2705 Logout berhasil.");break;case 401:await a.reply(t.get("unauthenticated"));break;default:await a.reply("\u26A0\uFE0F Terjadi kesalahan teknis saat mencoba logout. Silakan coba lagi nanti.");break}}};var u=e;export{u as default};
+//# sourceMappingURL=logout.command.js.map

@@ -1,0 +1,5 @@
+🚀 *Pilih Journey untuk Automasi*
+
+{{journeyList}}
+
+💡 _Ketik *.bl solve [nomor_journey]* untuk menyelesaikan course._

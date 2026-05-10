@@ -1,0 +1,8 @@
+⚠️ Akses Ditolak: Belum Login
+
+Kamu harus terhubung dengan akun Binusmaya/LMS terlebih dahulu untuk menggunakan bot ini.
+
+Ketik:
+.login [email] [password]
+
+Pastikan menggunakan email binus yang valid.

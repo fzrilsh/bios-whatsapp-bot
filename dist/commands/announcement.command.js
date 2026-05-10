@@ -1,0 +1,4 @@
+import{AllowedUsersService as u}from"../services/allowed-users.service.js";const i={name:"announcement",description:"Announce to all users",withPrefix:!0,mustOwner:!0,execute:async({sock:s,m:e,args:n})=>{if(!n.length)return await e.reply("Format salah. Gunakan: *.announcement [message]*");let t=0;const a=new u,o=`\u{1F514} *ANNOUNCEMENT*
+
+${n.join(" ")}`;for(const r of a.users)await s.sendMessage(r,{text:o}),t+=1,await new Promise(m=>setTimeout(m,1e3));await e.reply(`\u2705 Pengumuman berhasil dikirim ke ${t} user.`)}};var d=i;export{d as default};
+//# sourceMappingURL=announcement.command.js.map

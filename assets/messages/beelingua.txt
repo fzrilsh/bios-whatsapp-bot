@@ -1,0 +1,6 @@
+*🐝 BEELINGUA BINUS AUTOMATION*
+Halo! Sepertinya kamu siap untuk membereskan tugas-tugas Beelingua hari ini. Cek status akun kamu di bawah ini:
+
+🎮 Daftar Perintah:
+`.beelingua info` — Cek daftar progres unit.
+`.beelingua solve` — Selesaikan 1 course.
