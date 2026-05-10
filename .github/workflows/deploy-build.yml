@@ -38,6 +38,8 @@ jobs:
           
           cp .gitignore package.json package-lock.json Dockerfile .env.example release_workspace/
 
+      - name: Un-ignore dist folder
+        run: echo "!dist/" >> release_workspace/.gitignore
 
       - name: Push to Build Branch
         run: |
