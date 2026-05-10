@@ -36,7 +36,8 @@ jobs:
           
           rsync -av --exclude='database/.baileys_auth' assets/ release_workspace/assets/
           
-          cp package.json package-lock.json Dockerfile .env.example release_workspace/
+          cp .gitignore package.json package-lock.json Dockerfile .env.example release_workspace/
+
 
       - name: Push to Build Branch
         run: |
