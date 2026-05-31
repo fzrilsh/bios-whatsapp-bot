@@ -40,7 +40,11 @@ export async function messageUpsert(sock: WASocket, chatUpdate: { messages: prot
             }
 
             for (const cmd of commands.values()) {
-                const args = m.text.slice(cmd.withPrefix ? prefix.length : 0).trim().split(/ +/)
+                const hasPrefix = m.text.startsWith(prefix)
+
+                if (cmd.withPrefix && !hasPrefix) continue
+
+                const args = (hasPrefix ? m.text.slice(prefix.length) : m.text).trim().split(/ +/)
                 const commandName = args.shift()?.toLowerCase()
 
                 if (commandName == cmd.name || cmd.alias?.includes(commandName!)) {
