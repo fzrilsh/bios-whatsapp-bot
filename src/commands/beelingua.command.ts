@@ -22,11 +22,28 @@ const beelinguaCommand: Command = {
             return await m.reply(`❌ *Error*\nGagal mengambil data profil Beelingua. Pastikan layanan sedang aktif.`)
         }
 
-        if (!args.length) {
-            return await m.reply(msgProvider.get('beelingua', { token: profile.tokens })!)
+        const formatDate = (isoString: string) => {
+            const date = new Date(isoString)
+            return date.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            })
         }
 
-        const action = args.shift() // Mengambil command pertama (info/solve/buy/dll)
+        if (!args.length) {
+            return await m.reply(msgProvider.get('beelingua', {
+                periode_name: profile.periodName,
+                periode_start: formatDate(profile.periodStart),
+                periode_end: formatDate(profile.periodEnd),
+                heart_remaining: profile.remaining,
+                tokens: profile.tokens,
+                freeUnitsRemaining: profile.freeUnitsRemaining,
+                freeWindowResetIn: profile.freeWindowResetIn
+            })!)
+        }
+
+        const action = args.shift()
 
         switch (action) {
             case 'info': {
@@ -138,18 +155,18 @@ const beelinguaCommand: Command = {
                     return await m.reply(`✅ Selamat, semua course di journey ini telah selesai!`)
                 }
 
-                if (profile.tokens < 1) {
-                    return await m.reply(`❌ *SALDO HABIS*\nMaaf, token kamu saat ini sudah habis. Silakan ketik *.bl buy* untuk beli token.`)
-                }
-
                 const loadingMsg = await m.reply(`🚀 *Automasi Dimulai*\nSistem sedang mengerjakan course [${course.courseCode}] di background. Tunggu sebentar ya...`)
 
                 let isFinished = false
                 const startTime = Date.now()
+                let consecutiveFailures = 0
+                const MAX_CONSECUTIVE_FAILURES = 3
 
                 const pollInterval = setInterval(async () => {
                     try {
                         const progressData = await service.pollProgress(course.classId)
+                        consecutiveFailures = 0
+
                         const units = progressData.unitGroups.flatMap((group: any) => group.units ?? [])
 
                         const totalUnits = units.length
@@ -163,9 +180,9 @@ const beelinguaCommand: Command = {
                             const remainingUnits = totalUnits - doneUnits
                             const remainingSeconds = remainingUnits * avgTimePerUnit
 
-                            const m = Math.floor(remainingSeconds / 60)
+                            const mins = Math.floor(remainingSeconds / 60)
                             const s = Math.round(remainingSeconds % 60)
-                            etaText = `${m}m ${s}s`
+                            etaText = `${mins}m ${s}s`
                         }
 
                         await sock.sendMessage(m.chat, {
@@ -173,47 +190,63 @@ const beelinguaCommand: Command = {
                             edit: loadingMsg!.key
                         })
 
-                        if (!progressData.state.status) {
+                        if (progressData.state?.status === 0) {
                             isFinished = true
                             clearInterval(pollInterval)
+                            const errorMsg = progressData.state.message
+                                ? String(progressData.state.message)
+                                : "Terjadi kesalahan saat memulai automasi di server."
                             await sock.sendMessage(m.chat, {
-                                text: "❌ *Gagal*\nTerjadi kesalahan saat memulai automasi di server.",
+                                text: `❌ *Automasi Dihentikan*\n${errorMsg}`,
                                 edit: loadingMsg!.key
                             })
-
-                            throw progressData.state.message
+                            return
                         }
 
-                        if (doneUnits >= totalUnits || progressData.state.status == 2) {
+                        if (doneUnits >= totalUnits || progressData.state?.status === 2) {
                             isFinished = true
                             clearInterval(pollInterval)
                             await sock.sendMessage(m.chat, {
-                                text: `✅ *Automasi Selesai*\nCourse [${course.courseCode}] berhasil diselesaikan! 1 Token telah digunakan.`,
+                                text: `✅ *Automasi Selesai*\nCourse [${course.courseCode}] berhasil diselesaikan!`,
                                 edit: loadingMsg!.key
                             })
                         }
                     } catch (error) {
-                        logger.error("Polling error during solveCourse", error)
+                        consecutiveFailures++
+                        logger.error(`Polling error (${consecutiveFailures}/${MAX_CONSECUTIVE_FAILURES})`, error)
+
+                        if (consecutiveFailures >= MAX_CONSECUTIVE_FAILURES) {
+                            isFinished = true
+                            clearInterval(pollInterval)
+                            await sock.sendMessage(m.chat, {
+                                text: `⚠️ *Koneksi ke Server Terputus*\nTidak dapat menghubungi server selama ${MAX_CONSECUTIVE_FAILURES}x polling berturut-turut.\nProses mungkin masih berjalan di background. Silakan cek manual dengan *.bl info ${args[0]}*`,
+                                edit: loadingMsg!.key
+                            }).catch(() => {})
+                        }
                     }
                 }, 10000)
 
                 const isStarted = await service.solveCourse(course.classId)
                 if (!isStarted) {
-                    isFinished = true
-                    clearInterval(pollInterval)
-                    return await sock.sendMessage(m.chat, {
-                        text: "❌ *Gagal*\nTerjadi kesalahan saat memulai automasi di server.",
-                        edit: loadingMsg!.key
-                    })
+                    if (!isFinished) {
+                        isFinished = true
+                        clearInterval(pollInterval)
+                        return await sock.sendMessage(m.chat, {
+                            text: "❌ *Gagal atau Sudah Berjalan*\nProses tidak dapat dimulai. Mungkin ada proses yang sedang aktif atau terjadi error di server.",
+                            edit: loadingMsg!.key
+                        })
+                    }
+                    return
                 }
 
                 setTimeout(() => {
                     if (!isFinished) {
+                        isFinished = true
                         clearInterval(pollInterval)
                         sock.sendMessage(m.chat, {
                             text: `⚠️ *Waktu Tunggu Habis*\nProses mungkin masih berjalan di background. Silakan cek manual menggunakan *.bl info ${args[0]}*`,
                             edit: loadingMsg!.key
-                        })
+                        }).catch(() => {})
                     }
                 }, 15 * 60 * 1000)
 
@@ -225,19 +258,20 @@ const beelinguaCommand: Command = {
                 break;
 
             case 'report': {
-                if (!m.isOwner) return await m.reply(msgProvider.get('beelingua', { token: profile.tokens })!)
+                if (!m.isOwner) return await m.reply(msgProvider.get('beelingua', { tokens: profile.tokens, freeUnitsRemaining: profile.freeUnitsRemaining, freeWindowResetIn: profile.freeWindowResetIn, periode_name: '', periode_start: '', periode_end: '', heart_remaining: '' })!)
 
                 try {
                     const users = await service.getAdminReport()
                     const totalBought = users.reduce((a: any, b: any) => a + b.totalBought, 0)
                     const totalBoughtUser = users.reduce((a: any, b: any) => b.totalBought > 0 ? a + 1 : a, 0)
+                    const avgPricePerToken = (10000 + 30000 + 50000) / (10 + 30 + 60)
                     const totalRevenue = new Intl.NumberFormat('id-ID', {
                         style: 'currency',
                         currency: 'IDR',
-                        minimumFractionDigits: 2
-                    }).format(totalBought * (70000 / 2))
+                        minimumFractionDigits: 0
+                    }).format(totalBought * avgPricePerToken)
 
-                    await m.reply(`📊 *Admin Report*\nTotal user: ${users.length}\nTotal pembeli: ${totalBoughtUser} (${(totalBoughtUser / totalBought * 100).toFixed(1)}%)\nTotal pemakaian: ${totalBought}\nTotal revenue: ${totalRevenue}`)
+                    await m.reply(`📊 *Admin Report*\nTotal user: ${users.length}\nTotal pembeli: ${totalBoughtUser}\nTotal pemakaian: ${totalBought} token\nEst. revenue: ${totalRevenue}`)
                 } catch (error) {
                     await m.reply(`❌ Gagal mengambil report admin.`)
                 }
@@ -245,7 +279,7 @@ const beelinguaCommand: Command = {
             }
 
             case 'add-token': {
-                if (!m.isOwner) return await m.reply(msgProvider.get('beelingua', { token: profile.tokens })!)
+                if (!m.isOwner) return await m.reply(msgProvider.get('beelingua', { tokens: profile.tokens, freeUnitsRemaining: profile.freeUnitsRemaining, freeWindowResetIn: profile.freeWindowResetIn, periode_name: '', periode_start: '', periode_end: '', heart_remaining: '' })!)
                 if (args.length < 2) return await m.reply(`❌ Format salah. Gunakan: *.bl add-token [nomor] [jumlah]*`)
 
                 try {
@@ -260,7 +294,7 @@ const beelinguaCommand: Command = {
             }
 
             case 'remove-token': {
-                if (!m.isOwner) return await m.reply(msgProvider.get('beelingua', { token: profile.tokens })!)
+                if (!m.isOwner) return await m.reply(msgProvider.get('beelingua', { tokens: profile.tokens, freeUnitsRemaining: profile.freeUnitsRemaining, freeWindowResetIn: profile.freeWindowResetIn, periode_name: '', periode_start: '', periode_end: '', heart_remaining: '' })!)
                 if (args.length < 2) return await m.reply(`❌ Format salah. Gunakan: *.bl remove-token [nomor] [jumlah]*`)
 
                 try {
@@ -275,7 +309,7 @@ const beelinguaCommand: Command = {
             }
 
             default:
-                await m.reply(msgProvider.get('beelingua', { token: profile.tokens })!)
+                await m.reply(msgProvider.get('beelingua', { tokens: profile.tokens, freeUnitsRemaining: profile.freeUnitsRemaining, freeWindowResetIn: profile.freeWindowResetIn, periode_name: profile.periodName ?? '', periode_start: profile.periodStart ? formatDate(profile.periodStart) : '', periode_end: profile.periodEnd ? formatDate(profile.periodEnd) : '', heart_remaining: profile.remaining ?? '' })!)
                 break;
         }
     }
