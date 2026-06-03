@@ -32,14 +32,15 @@ const beelinguaCommand: Command = {
         }
 
         if (!args.length) {
+            console.log(profile)
             return await m.reply(msgProvider.get('beelingua', {
-                periode_name: profile.periodName,
-                periode_start: formatDate(profile.periodStart),
-                periode_end: formatDate(profile.periodEnd),
-                heart_remaining: profile.remaining,
-                tokens: profile.tokens,
-                freeUnitsRemaining: profile.freeUnitsRemaining,
-                freeWindowResetIn: profile.freeWindowResetIn
+                periode_name: profile.periodName ?? '',
+                periode_start: profile.periodStart ? formatDate(profile.periodStart) : '',
+                periode_end: profile.periodEnd ? formatDate(profile.periodEnd) : '',
+                heart_remaining: profile.remaining ?? '',
+                tokens: profile.tokens ?? 0,
+                freeUnitsRemaining: profile.freeUnitsRemaining ?? 0,
+                freeWindowResetIn: profile.freeWindowResetIn ?? '-'
             })!)
         }
 
@@ -258,7 +259,7 @@ const beelinguaCommand: Command = {
                 break;
 
             case 'report': {
-                if (!m.isOwner) return await m.reply(msgProvider.get('beelingua', { tokens: profile.tokens, freeUnitsRemaining: profile.freeUnitsRemaining, freeWindowResetIn: profile.freeWindowResetIn, periode_name: '', periode_start: '', periode_end: '', heart_remaining: '' })!)
+                if (!m.isOwner) return await m.reply(msgProvider.get('beelingua', { tokens: profile.tokens ?? 0, freeUnitsRemaining: profile.freeUnitsRemaining ?? 0, freeWindowResetIn: profile.freeWindowResetIn ?? '-', periode_name: '', periode_start: '', periode_end: '', heart_remaining: '' })!)
 
                 try {
                     const users = await service.getAdminReport()
@@ -279,7 +280,7 @@ const beelinguaCommand: Command = {
             }
 
             case 'add-token': {
-                if (!m.isOwner) return await m.reply(msgProvider.get('beelingua', { tokens: profile.tokens, freeUnitsRemaining: profile.freeUnitsRemaining, freeWindowResetIn: profile.freeWindowResetIn, periode_name: '', periode_start: '', periode_end: '', heart_remaining: '' })!)
+                if (!m.isOwner) return await m.reply(msgProvider.get('beelingua', { tokens: profile.tokens ?? 0, freeUnitsRemaining: profile.freeUnitsRemaining ?? 0, freeWindowResetIn: profile.freeWindowResetIn ?? '-', periode_name: '', periode_start: '', periode_end: '', heart_remaining: '' })!)
                 if (args.length < 2) return await m.reply(`❌ Format salah. Gunakan: *.bl add-token [nomor] [jumlah]*`)
 
                 try {
@@ -294,7 +295,7 @@ const beelinguaCommand: Command = {
             }
 
             case 'remove-token': {
-                if (!m.isOwner) return await m.reply(msgProvider.get('beelingua', { tokens: profile.tokens, freeUnitsRemaining: profile.freeUnitsRemaining, freeWindowResetIn: profile.freeWindowResetIn, periode_name: '', periode_start: '', periode_end: '', heart_remaining: '' })!)
+                if (!m.isOwner) return await m.reply(msgProvider.get('beelingua', { tokens: profile.tokens ?? 0, freeUnitsRemaining: profile.freeUnitsRemaining ?? 0, freeWindowResetIn: profile.freeWindowResetIn ?? '-', periode_name: '', periode_start: '', periode_end: '', heart_remaining: '' })!)
                 if (args.length < 2) return await m.reply(`❌ Format salah. Gunakan: *.bl remove-token [nomor] [jumlah]*`)
 
                 try {
@@ -309,7 +310,7 @@ const beelinguaCommand: Command = {
             }
 
             default:
-                await m.reply(msgProvider.get('beelingua', { tokens: profile.tokens, freeUnitsRemaining: profile.freeUnitsRemaining, freeWindowResetIn: profile.freeWindowResetIn, periode_name: profile.periodName ?? '', periode_start: profile.periodStart ? formatDate(profile.periodStart) : '', periode_end: profile.periodEnd ? formatDate(profile.periodEnd) : '', heart_remaining: profile.remaining ?? '' })!)
+                await m.reply(msgProvider.get('beelingua', { tokens: profile.tokens ?? 0, freeUnitsRemaining: profile.freeUnitsRemaining ?? 0, freeWindowResetIn: profile.freeWindowResetIn ?? '-', periode_name: profile.periodName ?? '', periode_start: profile.periodStart ? formatDate(profile.periodStart) : '', periode_end: profile.periodEnd ? formatDate(profile.periodEnd) : '', heart_remaining: profile.remaining ?? '' })!)
                 break;
         }
     }
