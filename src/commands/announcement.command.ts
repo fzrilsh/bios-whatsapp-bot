@@ -13,8 +13,7 @@ const announcementCommand: Command = {
         
         let successCount = 0
         const allowedUsers = new AllowedUsersService()
-        const message = `🔔 *ANNOUNCEMENT*\n\n` +
-            `${args.join(' ')}`
+        const message = `${args.join(' ')}`
             
         for (const user of allowedUsers.users) {
             await sock.sendMessage(user, { text: message })
