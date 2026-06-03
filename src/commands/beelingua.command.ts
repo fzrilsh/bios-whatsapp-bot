@@ -32,7 +32,6 @@ const beelinguaCommand: Command = {
         }
 
         if (!args.length) {
-            console.log(profile)
             return await m.reply(msgProvider.get('beelingua', {
                 periode_name: profile.periodName ?? '',
                 periode_start: profile.periodStart ? formatDate(profile.periodStart) : '',
