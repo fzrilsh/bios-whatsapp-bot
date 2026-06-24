@@ -221,7 +221,7 @@ const beelinguaCommand: Command = {
                             await sock.sendMessage(m.chat, {
                                 text: `⚠️ *Koneksi ke Server Terputus*\nTidak dapat menghubungi server selama ${MAX_CONSECUTIVE_FAILURES}x polling berturut-turut.\nProses mungkin masih berjalan di background. Silakan cek manual dengan *.bl info ${args[0]}*`,
                                 edit: loadingMsg!.key
-                            }).catch(() => {})
+                            }).catch(() => { })
                         }
                     }
                 }, 10000)
@@ -246,7 +246,7 @@ const beelinguaCommand: Command = {
                         sock.sendMessage(m.chat, {
                             text: `⚠️ *Waktu Tunggu Habis*\nProses mungkin masih berjalan di background. Silakan cek manual menggunakan *.bl info ${args[0]}*`,
                             edit: loadingMsg!.key
-                        }).catch(() => {})
+                        }).catch(() => { })
                     }
                 }, 15 * 60 * 1000)
 
@@ -283,10 +283,15 @@ const beelinguaCommand: Command = {
                 if (args.length < 2) return await m.reply(`❌ Format salah. Gunakan: *.bl add-token [nomor] [jumlah]*`)
 
                 try {
-                    const targetJid = args[0] + '@s.whatsapp.net'
+                    const cleanNumber = args[0].replace(/[^0-8]/g, '') 
+                    const targetJid = cleanNumber + '@s.whatsapp.net'
                     const amount = parseInt(args[1]!)
                     const add = await service.addTokenAdmin(targetJid, amount)
-                    await sock.sendMessage(m.chat, { text: `✅ Berhasil menambahkan ${amount} token ke @${args[0]}\nToken saat ini: ${add.currentTokens}`, mentions: [targetJid] })
+                    await sock.sendMessage(m.chat, { text: `✅ Berhasil menambahkan ${amount} token ke @${targetJid.split('@')[0]}\nToken saat ini: ${add.currentTokens}`, mentions: [targetJid] })
+                    await sock.sendMessage(targetJid, {
+                        text: `✅ *Token Berhasil Ditambahkan!*\n\nHalo @${targetJid.split('@')[0]}, baru saja ditambahkan *${amount} token* ke akun kamu.\n\n🪙 Total token kamu saat ini: *${add.currentTokens}*`,
+                        mentions: [targetJid]
+                    })
                 } catch (error) {
                     await m.reply(`❌ Gagal menambahkan token. Pastikan nomor benar.`)
                 }
@@ -298,10 +303,15 @@ const beelinguaCommand: Command = {
                 if (args.length < 2) return await m.reply(`❌ Format salah. Gunakan: *.bl remove-token [nomor] [jumlah]*`)
 
                 try {
-                    const targetJid = args[0] + '@s.whatsapp.net'
+                    const cleanNumber = args[0].replace(/[^0-8]/g, '') 
+                    const targetJid = cleanNumber + '@s.whatsapp.net'
                     const amount = parseInt(args[1]!)
                     const remove = await service.removeTokenAdmin(targetJid, amount)
-                    await sock.sendMessage(m.chat, { text: `✅ Berhasil mengurangi ${amount} token dari @${args[0]}\nToken saat ini: ${remove.currentTokens}`, mentions: [targetJid] })
+                    await sock.sendMessage(m.chat, { text: `✅ Berhasil mengurangi ${amount} token dari @${targetJid.split('@')[0]}\nToken saat ini: ${remove.currentTokens}`, mentions: [targetJid] })
+                    await sock.sendMessage(targetJid, {
+                        text: `⚠️ *Token Kamu Dikurangi*\n\nHalo @${targetJid.split('@')[0]}, baru saja sebanyak *${amount} token* dikurangi dari akun kamu.\n\n🪙 Sisa token kamu saat ini: *${remove.currentTokens}*`,
+                        mentions: [targetJid]
+                    })
                 } catch (error) {
                     await m.reply(`❌ Gagal mengurangi token. Pastikan nomor benar.`)
                 }
