@@ -7,7 +7,7 @@ const beelinguaCommand: Command = {
     description: "Automasi Beelingua: Pantau progres belajar kamu dan selesaikan course dengan cepat.",
     alias: ["bl"],
     withPrefix: true,
-    execute: async ({ sock, m, args, msgProvider }) => {
+    execute: async ({ sock, m, args, msgProvider, pollManager }) => {
         const auth = await m.auth.getUserInfo()
         if (!auth) {
             return await m.reply(msgProvider.get('unauthenticated')!)
@@ -32,7 +32,7 @@ const beelinguaCommand: Command = {
         }
 
         if (!args.length) {
-            return await m.reply(msgProvider.get('beelingua', {
+            await m.reply(msgProvider.get('beelingua', {
                 periode_name: profile.periodName ?? '',
                 periode_start: profile.periodStart ? formatDate(profile.periodStart) : '',
                 periode_end: profile.periodEnd ? formatDate(profile.periodEnd) : '',
@@ -41,6 +41,26 @@ const beelinguaCommand: Command = {
                 freeUnitsRemaining: profile.freeUnitsRemaining ?? 0,
                 freeWindowResetIn: profile.freeWindowResetIn ?? '-'
             })!)
+
+            try {
+                const choice = await pollManager.sendPoll(sock, m.chat, {
+                    name: "Pilih Menu Beelingua:",
+                    values: ["ℹ️ Info Journey", "🚀 Automasi Course", "🛒 Beli Token"],
+                })
+
+                if (choice === "ℹ️ Info Journey") {
+                    args.push("info")
+                } else if (choice === "🚀 Automasi Course") {
+                    args.push("solve")
+                } else if (choice === "🛒 Beli Token") {
+                    args.push("buy")
+                } else {
+                    return
+                }
+            } catch (err) {
+                // Poll timeout or error
+                return
+            }
         }
 
         const action = args.shift()
