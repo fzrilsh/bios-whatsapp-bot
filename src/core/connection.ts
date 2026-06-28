@@ -1,6 +1,5 @@
 import { connectionUpdate } from "../handlers/connection-update.js"
 import { messageUpsert } from "../handlers/message-upsert.js"
-import { pollUpdate } from "../handlers/poll-update.js"
 import makeWASocket, { Browsers, useMultiFileAuthState, WASocket } from "baileys"
 import pino from "pino"
 import { Command } from "../types/command.type.js"
@@ -18,6 +17,7 @@ export async function startWhatsappConnection(commands: Map<string, Command>, ms
         version: [2, 3000, 1033893291],
         keepAliveIntervalMs: 30000,
         defaultQueryTimeoutMs: undefined,
+        getMessage: pollManager.getMessage,
     })
 
     sock.ev.on('creds.update', saveCreds)
@@ -26,9 +26,5 @@ export async function startWhatsappConnection(commands: Map<string, Command>, ms
 
     sock.ev.on('messages.upsert', chatUpdate => messageUpsert(sock, chatUpdate, commands, msgProvider, pollManager))
 
-    sock.ev.on('messages.update', updates => pollUpdate(sock, updates, pollManager))
-
     return sock
 }
-
-

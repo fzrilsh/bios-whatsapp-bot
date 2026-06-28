@@ -31,6 +31,15 @@ export async function messageUpsert(sock: WASocket, chatUpdate: { messages: prot
                 continue
             }
 
+            if (msg.message?.pollUpdateMessage) {
+                await pollManager.handlePollVote(sock, msg)
+                continue
+            }
+
+            if (msg.key?.fromMe && (msg.message?.pollCreationMessage || msg.message?.pollCreationMessageV2 || msg.message?.pollCreationMessageV3)) {
+                pollManager.updatePendingPollMessage(msg)
+            }
+
             if (!m || !m.text || m.isGroup) {
                 continue
             }
@@ -53,7 +62,7 @@ export async function messageUpsert(sock: WASocket, chatUpdate: { messages: prot
 
                     const isAllowed = await allowedUsers.handleUserNotAllowed(sock, m)
                     if (!isAllowed) return
-                    
+
                     if (maintenance.get.mode && !m.fromMe && !m.isOwner) {
                         messagesWhenMaintenance.get[m.sender] = msg
                         messagesWhenMaintenance.write()
