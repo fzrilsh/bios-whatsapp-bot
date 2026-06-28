@@ -73,11 +73,15 @@ const beelinguaCommand: Command = {
                 }
 
                 if (args.length === 0) {
-                    const journeyList = journeys.map((j: any, i: number) => {
-                        return `*[${i + 1}]* ${j.journeyTitle}`
-                    }).join("\n")
+                    if (journeys.length === 1) {
+                        args.push("1")
+                    } else {
+                        const journeyList = journeys.map((j: any, i: number) => {
+                            return `*[${i + 1}]* ${j.journeyTitle}`
+                        }).join("\n")
 
-                    return await m.reply(msgProvider.get('beelingua-journey-list', { journeyList })!)
+                        return await m.reply(msgProvider.get('beelingua-journey-list', { journeyList })!)
+                    }
                 }
 
                 const journeyIndex = parseInt(args[0]!) - 1
@@ -152,13 +156,17 @@ const beelinguaCommand: Command = {
                 }
 
                 if (args.length === 0) {
-                    const journeyList = journeys.map((j: any, i: number) => {
-                        return `*[${i + 1}]* ${j.journeyTitle}`
-                    }).join("\n")
+                    if (journeys.length === 1) {
+                        args.push("1")
+                    } else {
+                        const journeyList = journeys.map((j: any, i: number) => {
+                            return `*[${i + 1}]* ${j.journeyTitle}`
+                        }).join("\n")
 
-                    return await m.reply(msgProvider.get('beelingua-journey-solve-list', {
-                        journeyList
-                    })!)
+                        return await m.reply(msgProvider.get('beelingua-journey-solve-list', {
+                            journeyList
+                        })!)
+                    }
                 }
 
                 const journeyIndex = parseInt(args[0]!) - 1
