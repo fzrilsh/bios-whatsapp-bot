@@ -335,7 +335,7 @@ const beelinguaCommand: Command = {
                 if (args.length < 2) return await m.reply(`❌ Format salah. Gunakan: *.bl add-token [nomor] [jumlah]*`)
 
                 try {
-                    const cleanNumber = args[0].replace(/[^0-9]/g, '') 
+                    const cleanNumber = args[0].replace(/[^0-9]/g, '')
                     const targetJid = cleanNumber + '@s.whatsapp.net'
                     const amount = parseInt(args[1]!)
                     const add = await service.addTokenAdmin(targetJid, amount)
@@ -355,7 +355,7 @@ const beelinguaCommand: Command = {
                 if (args.length < 2) return await m.reply(`❌ Format salah. Gunakan: *.bl remove-token [nomor] [jumlah]*`)
 
                 try {
-                    const cleanNumber = args[0].replace(/[^0-9]/g, '') 
+                    const cleanNumber = args[0].replace(/[^0-9]/g, '')
                     const targetJid = cleanNumber + '@s.whatsapp.net'
                     const amount = parseInt(args[1]!)
                     const remove = await service.removeTokenAdmin(targetJid, amount)
