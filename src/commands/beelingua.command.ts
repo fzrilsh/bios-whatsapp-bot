@@ -183,6 +183,30 @@ const beelinguaCommand: Command = {
                     return await m.reply(`✅ Selamat, semua course di journey ini telah selesai!`)
                 }
 
+                const freeRemaining = profile.freeUnitsRemaining ?? 0
+                const tokens = profile.tokens ?? 0
+
+                let confirmText = `Apakah kamu yakin ingin menyelesaikan course *[${course.courseCode}] ${course.courseTitleEn}*?\n\n`
+                if (freeRemaining > 0) {
+                    confirmText += `✅ *Gratis!* Kamu memiliki sisa ${freeRemaining} free unit bypass.`
+                } else {
+                    confirmText += `⚠️ *Bypass Gratis Habis!*\nAutomasi ini akan memotong token kamu.\nSisa Token: ${tokens}`
+                }
+
+                try {
+                    const choice = await pollManager.sendPoll(sock, m.chat, {
+                        name: confirmText,
+                        values: ["✅ Ya, Lanjutkan", "❌ Batal"],
+                    })
+
+                    if (choice === "❌ Batal") {
+                        await sock.sendMessage(m.chat, { text: "✅ Automasi dibatalkan." })
+                        return
+                    }
+                } catch (err) {
+                    return // Timeout atau error
+                }
+
                 const loadingMsg = await m.reply(`🚀 *Automasi Dimulai*\nSistem sedang mengerjakan course [${course.courseCode}] di background. Tunggu sebentar ya...`)
 
                 let isFinished = false
