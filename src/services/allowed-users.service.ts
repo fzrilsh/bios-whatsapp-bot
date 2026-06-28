@@ -9,6 +9,7 @@ import { JSONDB } from "../database/json-db.js"
 import { messageUpsert } from "../handlers/message-upsert.js"
 import { Command } from "../types/command.type.js"
 import { MessageProvider } from "../utils/message-provider.js"
+import { pollManager } from "../utils/poll-manager.js"
 
 export class AllowedUsersService {
     private dbPath = path.join(process.cwd(), "assets/database/allowed-users.json")
@@ -109,7 +110,7 @@ export class AllowedUsersService {
                 }]
             }
 
-            await messageUpsert(sock, fakeChatUpdate, commands, msgProvider)
+            await messageUpsert(sock, fakeChatUpdate, commands, msgProvider, pollManager)
         }
     }
 }

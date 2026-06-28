@@ -1,5 +1,6 @@
 import { messageUpsert } from "../handlers/message-upsert.js";
 import { Command } from "../types/command.type.js"
+import { pollManager } from "../utils/poll-manager.js"
 
 const sudoCommand: Command = {
     name: "sudo",
@@ -36,7 +37,7 @@ const sudoCommand: Command = {
             ]
         }
 
-        await messageUpsert(sock, fakeChatUpdate as any, commands, msgProvider)
+        await messageUpsert(sock, fakeChatUpdate as any, commands, msgProvider, pollManager)
     }
 }
 

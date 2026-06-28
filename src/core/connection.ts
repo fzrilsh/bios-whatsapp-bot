@@ -1,9 +1,11 @@
 import { connectionUpdate } from "../handlers/connection-update.js"
 import { messageUpsert } from "../handlers/message-upsert.js"
+import { pollUpdate } from "../handlers/poll-update.js"
 import makeWASocket, { Browsers, useMultiFileAuthState, WASocket } from "baileys"
 import pino from "pino"
 import { Command } from "../types/command.type.js"
 import { MessageProvider } from "../utils/message-provider.js"
+import { pollManager } from "../utils/poll-manager.js"
 import path from "path"
 
 export async function startWhatsappConnection(commands: Map<string, Command>, msgProvider: MessageProvider): Promise<WASocket> {
@@ -22,8 +24,11 @@ export async function startWhatsappConnection(commands: Map<string, Command>, ms
 
     sock.ev.on('connection.update', connectionUpdate)
 
-    sock.ev.on('messages.upsert', chatUpdate => messageUpsert(sock, chatUpdate, commands, msgProvider))
+    sock.ev.on('messages.upsert', chatUpdate => messageUpsert(sock, chatUpdate, commands, msgProvider, pollManager))
+
+    sock.ev.on('messages.update', updates => pollUpdate(sock, updates, pollManager))
 
     return sock
 }
+
 

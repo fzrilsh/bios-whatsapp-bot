@@ -7,9 +7,10 @@ import { reactionMessage } from "./reaction-message.js";
 import { AllowedUsersService } from "../services/allowed-users.service.js";
 import { MessageProvider } from "../utils/message-provider.js";
 import { JSONDB } from "../database/json-db.js";
+import type { PollManager } from "../utils/poll-manager.js";
 
 
-export async function messageUpsert(sock: WASocket, chatUpdate: { messages: proto.IWebMessageInfo[] }, commands: Map<string, Command>, msgProvider: MessageProvider) {
+export async function messageUpsert(sock: WASocket, chatUpdate: { messages: proto.IWebMessageInfo[] }, commands: Map<string, Command>, msgProvider: MessageProvider, pollManager: PollManager) {
     const maintenance = new JSONDB("assets/database/maintenance.json", {})
     const messagesWhenMaintenance = new JSONDB("assets/database/messages-when-maintenance.json", {})
     const allowedUsers = new AllowedUsersService()
@@ -63,7 +64,7 @@ export async function messageUpsert(sock: WASocket, chatUpdate: { messages: prot
                         return await m.reply(msgProvider.get('forbidden')!)
                     }
 
-                    await cmd.execute({ sock, m, args, commands, command: commandName!, msgProvider })
+                    await cmd.execute({ sock, m, args, commands, command: commandName!, msgProvider, pollManager })
                     break
                 }
             }

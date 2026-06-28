@@ -1,6 +1,7 @@
 import { Command } from "../types/command.type.js";
 import { JSONDB } from "../database/json-db.js";
 import { messageUpsert } from "../handlers/message-upsert.js";
+import { pollManager } from "../utils/poll-manager.js";
 
 const maintenance = new JSONDB("assets/database/maintenance.json", {})
 const messagesWhenMaintenance = new JSONDB("assets/database/messages-when-maintenance.json", {})
@@ -23,7 +24,7 @@ const maintenanceCommand: Command = {
         maintenance.write()
 
         if (!mode) {
-            messageUpsert(sock, { messages: Object.values(messagesWhenMaintenance.get) }, commands, msgProvider)
+            messageUpsert(sock, { messages: Object.values(messagesWhenMaintenance.get) }, commands, msgProvider, pollManager)
             messagesWhenMaintenance.clear()
             messagesWhenMaintenance.write()
         }

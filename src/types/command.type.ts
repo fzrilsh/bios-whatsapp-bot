@@ -1,5 +1,6 @@
 import type { WASocket } from "baileys";
 import { MessageProvider } from "../utils/message-provider.js";
+import { PollManager } from "../utils/poll-manager.js";
 import { ExtendedMessage } from "./extended-message.type.js";
 
 export interface Command {
@@ -8,5 +9,5 @@ export interface Command {
     withPrefix: boolean
     alias?: string[]
     mustOwner?: boolean
-    execute: (context: {sock: WASocket, m: ExtendedMessage, args: string[], commands: Map<string, Command>, command: string, msgProvider: MessageProvider}) => Promise<any>
+    execute: (context: {sock: WASocket, m: ExtendedMessage, args: string[], commands: Map<string, Command>, command: string, msgProvider: MessageProvider, pollManager: PollManager}) => Promise<any>
 }
