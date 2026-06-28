@@ -1,0 +1,14 @@
+📘 *BEELINGUA: MY COURSES*
+Halo! Berikut adalah rangkuman progress Beelingua kamu:
+
+📊 *TOTAL SUMMARY*
+- Selesai: *{{totalDone}}* Course
+- On-Progress: *{{totalPending}}* dari *{{total}}* Course
+
+────────────────────────
+
+{{courseListText}}
+
+────────────────────────
+
+💡 _Ketik *.bl info {{journeyId}} [nomor_course]* untuk melihat detail unit._

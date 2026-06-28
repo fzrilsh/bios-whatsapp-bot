@@ -1,0 +1,2 @@
+async function l(n,o){try{const t=await fetch(n,o),s=t.ok,a=t.status,r=await t.text();let e;try{e=JSON.parse(r)}catch{e=null}return{status:s,status_code:a,response:t,response_text:r,response_json:e}}catch(t){return{status:!1,response_text:`Network Error: ${t instanceof Error?t.message:String(t)}`,response_json:null}}}export{l as fetcher};
+//# sourceMappingURL=fetcher.js.map

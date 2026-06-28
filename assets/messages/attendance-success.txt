@@ -1,0 +1,7 @@
+✅ ABSENSI BERHASIL!
+
+Mata Kuliah: {{subject}}
+Waktu: {{time}}
+Ruangan: {{location}}
+
+Data presensi kamu sudah tercatat di sistem. Selamat belajar, {{name}}! 🚀

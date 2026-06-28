@@ -1,0 +1,6 @@
+⚠️ ABSENSI GAGAL
+
+Gagal memproses presensi untuk:
+{{subject}} ({{time}})
+
+Penyebab: Terjadi kendala pada sistem. Silakan coba beberapa saat lagi. Jika terus berulang, silahkan coba melakukan login ulang.

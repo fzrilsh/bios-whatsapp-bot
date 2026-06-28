@@ -1,0 +1,28 @@
+💳 *INFORMASI HARGA TOKEN*
+
+Pilih paket token sesuai kebutuhanmu:
+
+🥉 *Paket Basic — Rp 12.000*
+Dapat 10 Token
+
+🥈 *Paket Standard — Rp 32.000*
+Dapat 30 Token
+
+🥇 *Paket Value — Rp 52.000* 🔥
+Dapat 60 Token (Lebih Hemat!)
+
+_(Harga di atas sudah termasuk biaya platform Rp 2.000)_
+
+---
+
+💡 *Detail Penggunaan Token:*
+• *Final Test:* 7,3 token / test
+• *Unit / Checkpoint:* Gratis (Limit 2 unit / 6 jam)
+• *Bypass Limit:* 1,3 token / unit tambahan
+
+📤 *Instruksi Pembayaran:*
+Transfer ke *SeaBank: 901142106970*
+Wajib isi catatan/keterangan: *BL{{id}}*
+_(Contoh: BL628xxx)_
+
+✅ Setelah transfer, pembayaran akan diverifikasi secara otomatis maksimal dalam 10 menit.

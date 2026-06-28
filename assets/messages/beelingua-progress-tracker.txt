@@ -1,0 +1,13 @@
+🔄 *PROGRESS TRACKER: [{{courseCode}}]* 🚀
+*{{courseTitleEn}}*
+
+📈 *Overall:* [{{progressBar}}] *{{percent}}%*
+🎯 *Current Task:* {{unitCode}}
+
+────────────────────────
+📖 *UNIT CHECKLIST:*
+{{unitChecklist}}
+────────────────────────
+
+🕒 *Last Sync:* {{lastUpdate}} WIB
+_Bot sedang memproses unit berikutnya..._

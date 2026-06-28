@@ -1,0 +1,2 @@
+import i from"path";import a from"fs";class e{constructor(t,s){this.initData=s;this.path=i.join(process.cwd(),t),this.data=this.initData??[],this.load()}path;data;get get(){return this.data}clear(){this.data=this.initData}load(){if(!a.existsSync(this.path))return this.write();try{this.data=JSON.parse(a.readFileSync(this.path,"utf-8"))}catch(t){throw t}}write(){a.writeFileSync(this.path,JSON.stringify(this.data,null,2))}}export{e as JSONDB};
+//# sourceMappingURL=json-db.js.map

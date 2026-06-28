@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/config/api.config.ts"],"sourcesContent":["import { ApiConfig } from \"../types/config.type.js\";\n\nexport default {\n    API_BASE_URL: (process.env.API_BASE_URL ?? \"\")\n} as ApiConfig"],"mappings":"AAEA,IAAOA,EAAQ,CACX,aAAe,QAAQ,IAAI,cAAgB,EAC/C","names":["api_config_default"]}

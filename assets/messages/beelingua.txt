@@ -1,0 +1,16 @@
+*🐝 BEELINGUA BINUS AUTOMATION*
+Halo! Sepertinya kamu siap untuk membereskan tugas-tugas Beelingua hari ini. Cek status akun kamu di bawah ini:
+
+📊 *Status Akun:*
+- *Periode:* {{periode_name}}
+- *Waktu:* {{periode_start}} - {{periode_end}}
+- *Heart:* {{heart_remaining}}/2
+
+💰 *Token & Limit:*
+- *Token:* {{tokens}} token
+- *Limit Gratis:* {{freeUnitsRemaining}}/2 unit tersisa (reset dalam {{freeWindowResetIn}})
+
+🎮 *Daftar Perintah:*
+*.beelingua info* — Cek daftar progres unit.
+*.beelingua solve* — Selesaikan 1 course.
+*.beelingua buy* — Beli token tambahan.

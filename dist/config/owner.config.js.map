@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/config/owner.config.ts"],"sourcesContent":["import { OwnerConfig } from \"../types/config.type.js\";\n\nexport default {\n    OWNER_NUMBER: (process.env.OWNER_NUMBER ?? \"\")\n} as OwnerConfig"],"mappings":"AAEA,IAAOA,EAAQ,CACX,aAAe,QAAQ,IAAI,cAAgB,EAC/C","names":["owner_config_default"]}

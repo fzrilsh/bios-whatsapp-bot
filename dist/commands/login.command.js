@@ -1,0 +1,7 @@
+import u from"p-limit";const n=u(2),s=new Set,l={name:"login",description:"Autentikasi akun Microsoft Binusmaya untuk mengaktifkan fitur bot.",withPrefix:!0,execute:async({sock:e,m:a,args:i})=>{if(await a.auth.getUserInfo())return await a.reply(`\u2705 Login berhasil.
+Silahkan lanjutkan aktivitas kamu!`);if(i.length<2)return await a.reply("Format salah. Gunakan: *.login [email] [password]*");if(s.has(a.sender))return await a.reply(`\u26A0\uFE0F Kamu sedang dalam proses login. Mohon tunggu sampai selesai sebelum mencoba lagi.
+
+Antrian saat ini: ${n.pendingCount}`);const[o,r]=i;s.add(a.sender),n.pendingCount>0&&await a.reply(`Sistem sedang sibuk (Antrean: ${n.pendingCount}). Mohon tunggu sebentar...`);const t=(await a.reply("\u23F3 Process login sedang berlangsung, mohon tunggu beberapa saat sampai proses login selesai."))?.key;switch(await n(async()=>await a.auth.login(o,r))){case 409:case 200:await e.sendMessage(a.chat,{edit:t,text:`\u2705 Login berhasil.
+Silahkan lanjutkan aktivitas kamu!`,mentions:[a.sender]});break;case 400:await e.sendMessage(a.chat,{edit:t,text:`\u274C Login gagal.
+Email atau password salah, atau terjadi kendala pada sistem Binus.`,mentions:[a.sender]});break;default:await e.sendMessage(a.chat,{edit:t,text:"\u26A0\uFE0F Terjadi kesalahan teknis saat mencoba login. Silakan coba lagi nanti.",mentions:[a.sender]});break}s.delete(a.sender)}};var h=l;export{h as default};
+//# sourceMappingURL=login.command.js.map

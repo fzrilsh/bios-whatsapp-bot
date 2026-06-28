@@ -1,0 +1,2 @@
+import"dotenv/config";import o from"./general.config.js";import r from"./owner.config.js";import e from"./api.config.js";var p=Object.freeze({...o,...r,...e});export{p as default};
+//# sourceMappingURL=index.js.map

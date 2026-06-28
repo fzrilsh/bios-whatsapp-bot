@@ -1,0 +1,17 @@
+*📘 COURSE PROGRESS: {{courseTitleEn}}*
+Halo! Berikut adalah rangkuman pencapaianmu:
+
+📈 Statistik Progres:
+- Course: {{courseTitleEn}} ({{courseCode}})
+- Progres Keseluruhan: [{{progressBar}}] *{{overallProgress}}%*
+- Unit Selesai: {{unitCompleted}} dari {{unitTotal}} Unit
+
+────────────────────────
+
+📖 LIST UNIT & CHECKPOINT:
+
+{{unitListText}}
+
+────────────────────────
+
+Untuk menyelesaikan course, kamu dapat menggunakan perintah: *.beelingua solve*
